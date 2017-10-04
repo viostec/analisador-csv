@@ -1,0 +1,5 @@
+Explora um CSV em busca de colunas com dados significativos:
+
+```
+php analisa-csv.php -a teste.csv
+```

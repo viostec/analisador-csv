@@ -2,6 +2,8 @@
 
 namespace Vios\Devops\AnalisadorCsv;
 
+use League\Csv\Modifier\MapIterator;
+
 class AnalisadorColunas
 {
     public function analisaArray(\Iterator $linhas) : array
@@ -44,5 +46,31 @@ class AnalisadorColunas
         }
 
         return $colunas;
+    }
+
+    public function groupByColuna(\Iterator $linhas, $keyColuna, $min = 1) : array
+    {
+        $array = iterator_to_array($linhas, false);
+
+        if(!isset($array[0][$keyColuna])) {
+            throw new \InvalidArgumentException("Chave {$keyColuna} não encontrada no conjunto de dados");
+        }
+
+        $dadosColuna = array_column($array, $keyColuna);
+        $contagem = array_count_values($dadosColuna);
+
+        $arrayFinal = [];
+        foreach ($contagem as $key => $value) {
+            if($value < $min) {
+                continue;
+            }
+
+            $arrayFinal[] = [
+                'valor' => $key,
+                'contagem' => $value
+            ];
+        }
+
+        return $arrayFinal;
     }
 }

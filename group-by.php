@@ -12,8 +12,16 @@ $cli->arguments->add([
         'longPrefix'  => 'arquivo',
         'description' => 'Arquivo à ser analisado',
         'required'    => true,
+    ],
+
+    "coluna" => [
+        'prefix'      => 'c',
+        'longPrefix'  => 'coluna',
+        'description' => 'Coluna a ser analisada pelo Group by',
+        'required'    => true,
     ]
 ]);
+
 $cli->arguments->parse();
 $nomeArquivo = $cli->arguments->get('arquivo');
 $caminhoArquivo = __DIR__ . "/" . $nomeArquivo;
@@ -22,7 +30,11 @@ if(!file_exists($caminhoArquivo)) {
 }
 
 $reader = \League\Csv\Reader::createFromPath($caminhoArquivo);
-$analisador = new Analisador($reader);
+$analisador = new \Vios\Devops\AnalisadorCsv\AnalisadorColunas();
 
-$cli->flank("Colunas");
-$cli->table($analisador->pegaColunasComDadosSignificativos());
+$coluna = $cli->arguments->get('coluna');
+
+$cli->flank("");
+$dados = $analisador->groupByColuna($reader->fetchAssoc(), $coluna, 2);
+$cli->info("Total de Registros:" . count($dados));
+$cli->table($dados);

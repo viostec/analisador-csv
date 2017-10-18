@@ -19,6 +19,13 @@ $cli->arguments->add([
         'longPrefix'  => 'coluna',
         'description' => 'Coluna a ser analisada pelo Group by',
         'required'    => true,
+    ],
+
+    "min" => [
+        'prefix'      => 'm',
+        'longPrefix'  => 'min',
+        'description' => 'Valor mínimo',
+        'required'    => false,
     ]
 ]);
 
@@ -33,8 +40,9 @@ $reader = \League\Csv\Reader::createFromPath($caminhoArquivo);
 $analisador = new \Vios\Devops\AnalisadorCsv\AnalisadorColunas();
 
 $coluna = $cli->arguments->get('coluna');
+$min = $cli->arguments->get('min') ?? 1;
 
 $cli->flank("");
-$dados = $analisador->groupByColuna($reader->fetchAssoc(), $coluna, 2);
+$dados = $analisador->groupByColuna($reader->fetchAssoc(), $coluna, $min);
 $cli->info("Total de Registros:" . count($dados));
 $cli->table($dados);

@@ -24,5 +24,15 @@ if(!file_exists($caminhoArquivo)) {
 $reader = \League\Csv\Reader::createFromPath($caminhoArquivo);
 $analisador = new Analisador($reader);
 
-$cli->flank("Colunas");
-$cli->table($analisador->pegaColunasComDadosSignificativos());
+$colunasAnalisadas = $analisador->pegaColunas();
+$totalColunasAnalisadas = count($colunasAnalisadas);
+
+$cli->flank("Todas as {$totalColunasAnalisadas} Colunas");
+$cli->table($colunasAnalisadas);
+
+$writter = \League\Csv\Writer::createFromPath(__DIR__ . "/colunas.csv", "w+");
+$writter->insertAll($colunasAnalisadas);
+
+//$cli->flank("Colunas com dados significativos");
+//$cli->table($analisador->pegaColunasComDadosSignificativos());
+

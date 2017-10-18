@@ -23,6 +23,8 @@ class AnalisadorColunas
                 }
 
                 $dado = trim($dado);
+                $dado = substr($dado, 0, 25);
+
                 if(empty($dado)) {
                     continue;
                 }
